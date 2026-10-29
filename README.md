@@ -11,11 +11,11 @@ On **1,022 complaints received in May–June 2024**:
 
 | Method | Team suggestions | Human review | Error among suggestions | Wrong suggestions / all cases |
 |---|---:|---:|---:|---:|
-| Classifier only | 100% | 0% | 13.8% (141/1,022) | 13.8% |
-| Classifier + Python review rules | 85.8% | 14.2% | 7.1% (62/877) | 6.1% |
+| Classifier only | 100% | 0% | 13.7% (140/1,022) | 13.7% |
+| Classifier + Python review rules | 85.8% | 14.2% | 7.2% (63/877) | 6.2% |
 | Real LLM assistant | Pending | Pending | Pending | Pending |
 
-The rules deferred **79 of the classifier's 141 errors (56.0%)**. Deferring a case does not mean that a person corrected it. These are disagreements with public product labels, which are imperfect proxies for appropriate business routing.
+The rules deferred **77 of the classifier's 140 errors (55.0%)**. Deferring a case does not mean that a person corrected it. These are disagreements with public product labels, which are imperfect proxies for appropriate business routing.
 
 **My question for further study:** How should the boundary change when the cost of a wrong suggestion and the capacity of human reviewers are known?
 
@@ -81,3 +81,5 @@ No real replies, financial advice, urgency assessment or complaint submissions. 
 ## Authorship and learning
 
 Implementation, tests and initial documentation were developed with AI assistance. Juhan selected the question and scope with that support. Personal interpretations and learning statements remain drafts for Juhan to review and explain in his own words; this repository does not imply independently authored code or an employed data-scientist role.
+
+Results shown above use Juhan's October 29 Windows reproduction. Identical data and review thresholds produced slightly different predictions with different library versions. The [initial run](docs/evidence/initial_run_2026-10-27.json) is retained; see the [reproduction note](docs/results.md#local-reproduction--october-29-2026).

@@ -28,7 +28,7 @@ Class scores are logistic regression `predict_proba` outputs; no calibration exp
 
 Before inspecting test metrics, select from score thresholds `[0,.4,.5,.6,.7,.8,.9,1.01]` and top-two-score gaps `[0,.1,.2]`. Choose maximum development coverage subject to at least 20 suggestions and empirical routed error <=10%. Ties prefer lower error, then larger thresholds. If no candidate qualifies, defer all. This 10% is an illustrative development constraint, not a justified business tolerance or statistical guarantee.
 
-The selected policy has **min_score=0 and min_margin=0.1**: the absolute-score restriction is inactive. The operative ambiguity rule is the top-two gap. Development: 432/489 suggested, 34/432 errors (7.87%). Invalid input also requires review. The frozen policy is applied unchanged to later test cases.
+The selected policy has **min_score=0 and min_margin=0.1**: the absolute-score restriction is inactive. The operative ambiguity rule is the top-two gap. Development: 433/489 suggested, 35/433 errors (8.08%). Invalid input also requires review. The frozen policy is applied unchanged to later test cases.
 
 Teams are fictional mappings: Card support; Deposit account support; Mortgage support; Collections complaint review. The model does not detect all out-of-domain inputs or infer urgency, liability or customer harm.
 
@@ -53,3 +53,7 @@ Cache keys include input, model ID, model-artifact fingerprint, policy, prompt a
 | Errors deferred | Base classifier errors sent to review / all base classifier errors; undefined if none |
 
 No human correction is simulated. Agent failures, violations, recorded usage and original latency will be reported after real execution. Cached original usage is historical, not a new charge. Failed calls can have unknown usage; pricing calculations are estimates, not invoices. No operating-cost, time-saving, satisfaction or Human+AI superiority claims are supported.
+
+## Reproduction record
+
+The current aggregate file records Juhan's October 29 local run. Its protocol, cleaned-data and agent-sample file hashes match the initial development run, and the selected threshold pair remains (0, 0.1). Packages differ, including scikit-learn 1.8.0 → 1.9.1. The small change in predictions is consistent with environment differences, but no controlled test isolates the cause. Preserve the [initial aggregates](evidence/initial_run_2026-10-27.json) alongside [current aggregates](evidence/summary.json); this is not a new independent validation set.

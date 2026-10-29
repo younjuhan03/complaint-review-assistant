@@ -1,6 +1,6 @@
 {
   "status": "classifier and Python rules evaluated; agent evaluation pending",
-  "utc": "2026-10-27T19:24:26.596104+00:00",
+  "utc": "2026-10-29T23:37:46.351449+00:00",
   "protocol": {
     "version": "1.0",
     "months": [
@@ -27,7 +27,7 @@
     "development_routed_error_target": 0.1,
     "minimum_development_routes": 20,
     "score_grid": [
-      0.0,
+      0,
       0.4,
       0.5,
       0.6,
@@ -37,7 +37,7 @@
       1.01
     ],
     "margin_grid": [
-      0.0,
+      0,
       0.1,
       0.2
     ],
@@ -49,7 +49,7 @@
   },
   "policy": {
     "version": "1.0",
-    "min_score": 0.0,
+    "min_score": 0,
     "min_margin": 0.1,
     "teams": {
       "Credit card": "Card support",
@@ -58,8 +58,8 @@
       "Debt collection": "Collections complaint review"
     },
     "score_note": "Uncalibrated model scores; not probability of being correct.",
-    "development_routes": 432,
-    "development_routed_error": 0.0787037037037037,
+    "development_routes": 433,
+    "development_routed_error": 0.08083140877598152,
     "development_target": 0.1,
     "team_note": "Illustrative mapping created for this project, not CFPB or company teams."
   },
@@ -96,7 +96,7 @@
       "url": "https://files.consumerfinance.gov/f/documents/CCDB_Export_5_September_2023_through_March_2024.zip",
       "bytes": 100880669,
       "sha256": "993747363e52239e4762b804662d7f604f976a139de4f729f613329d3d8c7206",
-      "retrieved_utc": "2026-10-27T19:20:13.491312+00:00",
+      "retrieved_utc": "2026-10-29T23:36:22.711548+00:00",
       "archive_rows": 945532,
       "scope_rows": 62388,
       "missing_or_short": 28751,
@@ -107,7 +107,7 @@
       "url": "https://files.consumerfinance.gov/f/documents/CCDB_Export_6_April_2024_through_July_2024.zip",
       "bytes": 77142558,
       "sha256": "c8a6fb0d98287958e2c19b47e1a4211c4e43225d27123a3ca08d730a2b4ae0a5",
-      "retrieved_utc": "2026-10-27T19:20:26.097110+00:00",
+      "retrieved_utc": "2026-10-29T23:36:33.419388+00:00",
       "archive_rows": 839903,
       "scope_rows": 73265,
       "missing_or_short": 34428,
@@ -116,7 +116,7 @@
     }
   ],
   "protocol_sha256": "80b21ff7ae2ba2875c5b04ea2093afa9ef1b012e3188464abb461a9fc48ec194",
-  "model_sha256": "e3df6a0831307f47f2a47ff44c7b1ead4f1a3bca7855fadb00cc74c4a09477de",
+  "model_sha256": "8c6f9d23bdf66f6716a99a543c32002cad463905861809029ba241e9c3acf9f4",
   "clean_data_sha256": "25583f7ac22a12b447816e6761233ec89fc30397aa4b91a16937fcb7a5233719",
   "agent_sample_sha256": "0676d74ff43ae8017e9a0aae6d15597cc30c8dda1126c7476f3ecccedc61a8e6",
   "full_test": {
@@ -124,13 +124,13 @@
       "cases": 1022,
       "route_suggestions": 1022,
       "human_reviews": 0,
-      "route_rate": 1.0,
-      "review_rate": 0.0,
-      "routed_error_rate": 0.1379647749510763,
-      "wrong_routes_per_all_cases": 0.1379647749510763,
-      "classifier_errors": 141,
+      "route_rate": 1,
+      "review_rate": 0,
+      "routed_error_rate": 0.136986301369863,
+      "wrong_routes_per_all_cases": 0.136986301369863,
+      "classifier_errors": 140,
       "classifier_errors_deferred": 0,
-      "fraction_classifier_errors_deferred": 0.0
+      "fraction_classifier_errors_deferred": 0
     },
     "python_review_rules": {
       "cases": 1022,
@@ -138,11 +138,11 @@
       "human_reviews": 145,
       "route_rate": 0.8581213307240705,
       "review_rate": 0.14187866927592954,
-      "routed_error_rate": 0.07069555302166476,
-      "wrong_routes_per_all_cases": 0.060665362035225046,
-      "classifier_errors": 141,
-      "classifier_errors_deferred": 79,
-      "fraction_classifier_errors_deferred": 0.5602836879432624
+      "routed_error_rate": 0.07183580387685291,
+      "wrong_routes_per_all_cases": 0.06164383561643835,
+      "classifier_errors": 140,
+      "classifier_errors_deferred": 77,
+      "fraction_classifier_errors_deferred": 0.55
     }
   },
   "matched_agent_sample": {
@@ -150,21 +150,21 @@
       "cases": 100,
       "route_suggestions": 100,
       "human_reviews": 0,
-      "route_rate": 1.0,
-      "review_rate": 0.0,
+      "route_rate": 1,
+      "review_rate": 0,
       "routed_error_rate": 0.1,
       "wrong_routes_per_all_cases": 0.1,
       "classifier_errors": 10,
       "classifier_errors_deferred": 0,
-      "fraction_classifier_errors_deferred": 0.0
+      "fraction_classifier_errors_deferred": 0
     },
     "python_review_rules": {
       "cases": 100,
-      "route_suggestions": 84,
-      "human_reviews": 16,
-      "route_rate": 0.84,
-      "review_rate": 0.16,
-      "routed_error_rate": 0.047619047619047616,
+      "route_suggestions": 83,
+      "human_reviews": 17,
+      "route_rate": 0.83,
+      "review_rate": 0.17,
+      "routed_error_rate": 0.04819277108433735,
       "wrong_routes_per_all_cases": 0.04,
       "classifier_errors": 10,
       "classifier_errors_deferred": 6,
@@ -182,38 +182,38 @@
       "precision": 0.8407643312101911,
       "recall": 0.9041095890410958,
       "f1-score": 0.8712871287128713,
-      "support": 292.0
+      "support": 292
     },
     "Credit card": {
-      "precision": 0.856,
+      "precision": 0.8594377510040161,
       "recall": 0.7697841726618705,
-      "f1-score": 0.8106060606060606,
-      "support": 278.0
+      "f1-score": 0.8121442125237192,
+      "support": 278
     },
     "Debt collection": {
-      "precision": 0.8241758241758241,
-      "recall": 0.847457627118644,
-      "f1-score": 0.8356545961002786,
-      "support": 177.0
+      "precision": 0.825136612021858,
+      "recall": 0.8531073446327684,
+      "f1-score": 0.8388888888888889,
+      "support": 177
     },
     "Mortgage": {
       "precision": 0.9166666666666666,
       "recall": 0.92,
       "f1-score": 0.9183303085299456,
-      "support": 275.0
+      "support": 275
     },
-    "accuracy": 0.8620352250489237,
+    "accuracy": 0.863013698630137,
     "macro avg": {
-      "precision": 0.8594017055131705,
-      "recall": 0.8603378472054026,
-      "f1-score": 0.8589695234872889,
-      "support": 1022.0
+      "precision": 0.8605013402256829,
+      "recall": 0.8617502765839337,
+      "f1-score": 0.8601626346638562,
+      "support": 1022
     },
     "weighted avg": {
-      "precision": 0.8624595292816339,
-      "recall": 0.8620352250489237,
-      "f1-score": 0.8612681260157804,
-      "support": 1022.0
+      "precision": 0.8635610500525385,
+      "recall": 0.863013698630137,
+      "f1-score": 0.8622466740164586,
+      "support": 1022
     }
   },
   "confusion_matrix": {
@@ -238,8 +238,8 @@
       ],
       [
         7,
-        9,
-        150,
+        8,
+        151,
         11
       ],
       [
@@ -256,10 +256,10 @@
     "reason": "No API key configured; no paid calls authorized or made."
   },
   "versions": {
-    "numpy": "2.3.5",
-    "pandas": "2.2.3",
-    "scikit-learn": "1.8.0",
-    "joblib": "1.5.3",
+    "numpy": "2.5.4",
+    "pandas": "3.1.0",
+    "scikit-learn": "1.9.1",
+    "joblib": "1.6.0",
     "streamlit": "1.66.1"
   }
 }
