@@ -1,94 +1,88 @@
-"""A short visitor-facing story, with technical detail kept optional."""
+"""A short local study: one classifier, one review policy, no external inference service."""
 from pathlib import Path
+import hashlib
 import json
-import math
-import os
 import sys
 import pandas as pd
 import streamlit as st
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from cra.cli import ROOT, LOCAL, EVIDENCE, load_assets
+from cra.cli import LOCAL, EVIDENCE, load_assets
 from cra.model import classify_complaint, rule_decision
-from cra.agent import run_agent, cost_preview
 
 st.set_page_config(page_title='Complaint Review Assistant',page_icon='📨',layout='centered')
 st.caption('A SMALL TEXT ANALYTICS PROJECT · JUHAN YOUN')
-st.title('When should an AI assistant ask for human review?')
+st.title('When should a complaint classifier ask for human review?')
 st.header('The question')
-st.write('A complaint arrives. Should a system suggest a support team, or leave it for a person to check?')
+st.write('A customer complaint arrives. When should a system suggest a support team, and when should a person check it first?')
 st.header('What I tried')
-st.write('I trained a simple text classifier on public consumer complaints, then added review rules. A small LLM assistant is implemented to call the classifier and read those same rules.')
-st.caption('Four product categories. Team names are illustrative. No complaint is sent to a company and no customer receives a reply.')
+st.write('I used public consumer complaints to compare two approaches: suggest a team for every complaint, or leave closely competing predictions for human review.')
+st.caption('One text classifier and fixed Python rules. All predictions run on your computer. Four product categories; team names are illustrative.')
 summary_path=EVIDENCE/'summary.json'
 summary=json.loads(summary_path.read_text()) if summary_path.exists() else None
 st.header('What I found')
 if summary:
-    comparison=summary['full_test']; a=comparison['classifier_only'];b=comparison['python_review_rules']
-    c1,c2=st.columns(2)
-    c1.metric('All cases classified: error rate',f"{a['routed_error_rate']:.1%}")
-    c2.metric('With rules: share sent for review',f"{b['review_rate']:.1%}")
-    rate='not defined (no routed cases)' if b['routed_error_rate'] is None else f"{b['routed_error_rate']:.1%}"
-    st.write(f"On {a['cases']:,} later complaints, the Python rules suggested a team for {b['route_suggestions']:,} cases. Among those suggestions, {rate} disagreed with the public product label.")
-    st.caption('This is classifier + Python-rule evidence, not LLM-agent performance. Review does not mean a person corrected the case.')
-    if summary['agent']['status']=='pending':st.info('Agent evaluation pending. No real LLM calls have been made in the published study.')
-    else:
-        st.write('Real LLM evaluation on the same fixed sample:')
-        st.json(summary['agent'])
-    with st.expander('See matched sample, all metrics and methods'):
-        rows=[]
-        for scope in ['full_test','matched_agent_sample']:
-            for name,metrics in summary[scope].items():rows.append({'scope':scope,'method':name,**metrics})
+    comparison=summary['full_test'];a=comparison['classifier_only'];b=comparison['python_review_rules']
+    def percent(value):return 'Not defined' if value is None else f'{value:.1%}'
+    c1,c2,c3=st.columns(3)
+    c1.metric('All cases classified: error',percent(a['routed_error_rate']))
+    c2.metric('With review: error among suggestions',percent(b['routed_error_rate']))
+    c3.metric('Left for human review',percent(b['review_rate']))
+    st.write(f"On {a['cases']:,} later complaints, the review rule suggested a team for {b['route_suggestions']:,} and left {b['human_reviews']:,} for a person. It deferred {b['classifier_errors_deferred']:,} of the classifier's {a['classifier_errors']:,} errors.")
+    correct_reviews=b['human_reviews']-b['classifier_errors_deferred']
+    st.info(f"The trade-off: fewer wrong suggestions, with more cases for people to check. {correct_reviews:,} deferred cases already matched the public label. Sending a case to review does not mean it was corrected.")
+    st.caption('“Error” means disagreement with a public product label. These labels are not perfect business-routing truth. This is an offline study, not measured business savings.')
+    with st.expander('See the full comparison and methods'):
+        rows=[{'Method':'Classify every case' if name=='classifier_only' else 'Use review rules',
+               'Cases':v['cases'],'Team suggestions':v['route_suggestions'],'Human review':v['human_reviews'],
+               'Error among suggestions':percent(v['routed_error_rate']),
+               'Wrong suggestions / all cases':percent(v['wrong_routes_per_all_cases']),
+               'Base errors deferred':percent(v['fraction_classifier_errors_deferred'])} for name,v in comparison.items()]
         st.dataframe(pd.DataFrame(rows),hide_index=True)
+        st.write('Train: January–March 2024. Review-rule selection: April. Evaluation: May–June. Only narrative text enters the model. TF-IDF + logistic regression; no model search.')
+        st.write('The rule and error target were chosen using development data. They are not a business-approved risk policy or a future guarantee.')
         st.json(summary['policy'])
-        st.write('Train: Jan–Mar 2024. Development: Apr 2024. Test: May–Jun 2024. No label, date, company response or other metadata is a model input. Model scores are uncalibrated.')
-        cm=summary['confusion_matrix'];st.dataframe(pd.DataFrame(cm['rows_true_columns_predicted'],index=cm['labels'],columns=cm['labels']))
-        st.caption('Confusion matrix: rows are public labels; columns are classifier predictions. This is a capped, roughly balanced sample, not the operational complaint mix.')
-else:st.info('Results pending. Run the data preparation and training commands in README.')
+        cm=summary['confusion_matrix'];st.caption('Rows: public labels. Columns: predictions.')
+        st.dataframe(pd.DataFrame(cm['rows_true_columns_predicted'],index=cm['labels'],columns=cm['labels']))
+        st.caption('The published findings use the October 29 Windows run. Data and threshold choices matched the initial run; a few predictions differed across library versions. Archived runs are retained in the repository.')
+else:st.info('Study results are not installed yet. Follow the README preparation and training steps.')
+
 st.header('Try an example')
 examples={
  'Write my own':'',
  'Prepared example: card billing':'My credit card statement shows a purchase I did not make. I contacted the card issuer to dispute the charge, but the amount still appears on my bill.',
  'Prepared example: mortgage payment':'I sent my monthly mortgage payment before the due date. The mortgage servicer has not credited the payment to my home loan account and keeps adding late fees.',
  'Prepared example: deliberately unclear':'I have contacted the company several times about my account. The explanation is confusing and I still do not understand why the amount is wrong.'}
-choice=st.selectbox('Choose an original illustrative example or write your own',list(examples))
+choice=st.selectbox('Choose an illustrative example or write your own',list(examples))
 text=st.text_area('English complaint (80–12,000 characters)',value=examples[choice],height=130,max_chars=12000,key='text_'+choice)
-st.caption('Prepared examples were written for this demo; they are not copied consumer narratives or evaluation evidence. Do not enter names, account numbers or other personal information.')
-mode=st.radio('Run mode',['Local Python review rules (no LLM)','Live LLM assistant'],horizontal=True)
+st.caption('Prepared examples were written for this demo, not copied from consumers or used as evaluation evidence. Example results may vary; no example is forced to a particular action. Avoid entering personal information.')
+st.caption('Local execution · no API key or usage charge · entered text is not sent to an external AI service or saved by this app.')
 assets_ready=(LOCAL/'model.joblib').exists() and (LOCAL/'policy.json').exists()
-if not assets_ready:st.warning('The local model is not installed. Follow the README training steps; the saved findings above remain available.')
-consent=False; live_ready=False
-if mode=='Live LLM assistant':
-    st.warning('A live run sends your entered complaint to OpenAI. It can incur API charges. A prior response may be loaded from the local cache. This is not a general chatbot.')
-    live_ready=bool(os.environ.get('OPENAI_API_KEY') and os.environ.get('CRA_MODEL'))
-    if not live_ready:st.info('Configure OPENAI_API_KEY and CRA_MODEL locally. Do not paste a key into this page or chat.')
+if not assets_ready:st.warning('The saved study is available above. To try examples, prepare the data and train the local model using the README commands.')
+if st.button('Check this complaint',type='primary',disabled=not assets_ready):
     try:
-        ip=float(os.environ['CRA_INPUT_USD_PER_MILLION']);op=float(os.environ['CRA_OUTPUT_USD_PER_MILLION'])
-        if not all(math.isfinite(p) and p > 0 for p in [ip,op]): raise ValueError('Invalid price')
-        estimate=cost_preview([text],ip,op)['planning_cost_usd']
-        st.caption(f"Model: {os.environ.get('CRA_MODEL','not set')}. Planning allowance for one example: ${estimate:.4f} at configured prices. Maximum 3 requests.")
-        consent=st.checkbox('I agree to send this text and incur the displayed API cost allowance.')
-    except (KeyError,ValueError):
-        st.info('Configure the two verified API price variables to show a cost preview before live execution.')
-if st.button('Check this complaint',type='primary',disabled=not assets_ready or (mode=='Live LLM assistant' and not(live_ready and consent))):
-    model,policy=load_assets()
-    if mode.startswith('Local'):
-        tool=classify_complaint(text,model);output=rule_decision(tool,policy)
-        st.caption('Source: local classifier + Python rules. No LLM was called.')
-        trace={'classify_complaint':tool,'get_review_policy':policy}
-    else:
-        with st.spinner('The LLM is calling tools and checking the review rules…'):
-            import hashlib
-            fingerprint=hashlib.sha256((LOCAL/'model.joblib').read_bytes()).hexdigest()
-            record=run_agent(text,model,policy,fingerprint)
-        output=record['output'];trace=record
-        st.caption('Source: '+record['source'])
-    st.subheader('Human review needed' if output['action']=='HUMAN_REVIEW' else 'Team suggestion available')
-    st.write('**Suggested category:**',output['suggested_category'] or 'No valid suggestion')
-    st.write('**Illustrative team:**',output['suggested_team'] or 'Unassigned')
-    st.write('**Reason:**',output['reason'])
-    st.caption('A suggestion is not a sent complaint. This demo does not establish urgency, harm, liability or a correct resolution. It cannot reliably identify every out-of-scope input.')
-    with st.expander('Tool results and execution record'):st.json(trace)
+        model,policy=load_assets()
+        classification=classify_complaint(text,model)
+        output=rule_decision(classification,policy)
+        review=output['action']=='HUMAN_REVIEW'
+        st.subheader('Human review needed' if review else 'Team suggestion available')
+        st.write('**Provisional category:**' if review else '**Suggested category:**',output['suggested_category'] or 'No valid suggestion')
+        st.write('**Illustrative team:**',output['suggested_team'] or 'Unassigned')
+        st.write('**Reason:**',output['reason'])
+        if review and output['suggested_category']:st.caption('The category is a candidate only. A person needs to check before routing.')
+        st.caption('No complaint has been sent. This model does not establish urgency, harm, liability or a correct resolution, and cannot reliably reject every out-of-scope input.')
+        with st.expander('See model scores and review checks'):
+            if classification['valid_input']:
+                table=pd.DataFrame([{'Category':k,'Model score':v} for k,v in classification['scores'].items()]).sort_values('Model score',ascending=False)
+                st.dataframe(table,hide_index=True)
+                st.write(f"Top-two score gap: {classification['margin']:.3f}; required gap: {policy['min_margin']:.3f}.")
+                st.caption('Scores are uncalibrated. They are not verified probabilities of being correct.')
+            st.json({'classification':classification,'review_policy':policy,'decision':output})
+            current_hash=hashlib.sha256((LOCAL/'model.joblib').read_bytes()).hexdigest()
+            if summary and current_hash!=summary.get('model_sha256'):st.caption('This local model differs from the model fingerprint of the saved study. Example behavior may differ; retraining updates the local aggregate file.')
+    except Exception:
+        st.error('The local model could not complete this check. Leave the case for human review and check the model installation; no team suggestion was issued.')
+
 st.header('What I learned')
-st.write('A review rule can trade automatic suggestions for fewer wrong suggestions. That trade-off needs both numbers: how much the system handles, and how often those suggestions are wrong.')
-st.write('I want to learn how to choose that boundary using business costs and real reviewer feedback. The LLM comparison is still pending; the rules already perform the basic boundary decision.')
-st.caption('Reflection draft for Juhan to review in his own words. Implementation was developed with AI assistance. Findings are offline comparisons with public product labels, not measured business outcomes.')
+st.write('A classifier does not need to handle every case. Review rules can reduce wrong suggestions, but people must check more cases—including some the model already classified correctly.')
+st.write('I want to learn how to choose that boundary using the costs of wrong routing and the capacity of human reviewers. This study measures the trade-off; it does not establish the best policy for a real company.')
+st.caption('Reflection draft for Juhan to review in his own words. Implementation and initial writing were AI-assisted. Public complaint data: CFPB; no affiliation or endorsement.')

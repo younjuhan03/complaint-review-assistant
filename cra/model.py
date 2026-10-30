@@ -57,7 +57,7 @@ def choose_policy(model, dev, config):
             'team_note':'Illustrative mapping created for this project, not CFPB or company teams.'}
 
 def rule_decision(result, policy):
-    """This Python comparator is not an LLM agent."""
+    """Apply the fixed review policy and explain which check determined the action."""
     category=result['suggested_category']; reasons=[]
     if not result['valid_input']: reasons.append('Input failed the length or English screening check.')
     else:
@@ -66,4 +66,4 @@ def rule_decision(result, policy):
     return {'suggested_category': category, 'suggested_team':policy['teams'].get(category),
             'action':'HUMAN_REVIEW' if reasons else 'ROUTE_SUGGESTION',
             'reason':' '.join(reasons) if reasons else 'Model score and separation meet the fixed review rules.',
-            'tool_results_used':['classify_complaint','get_review_policy']}
+            'checks_used':['input_screen','classifier_scores','review_policy']}

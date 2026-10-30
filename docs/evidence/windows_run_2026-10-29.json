@@ -1,0 +1,265 @@
+{
+  "status": "classifier and Python rules evaluated; agent evaluation pending",
+  "utc": "2026-10-29T23:37:46.351449+00:00",
+  "protocol": {
+    "version": "1.0",
+    "months": [
+      "2024-01",
+      "2024-02",
+      "2024-03",
+      "2024-04",
+      "2024-05",
+      "2024-06"
+    ],
+    "per_product_month": 150,
+    "categories": [
+      "Credit card",
+      "Checking or savings account",
+      "Mortgage",
+      "Debt collection"
+    ],
+    "train_before": "2024-04-01",
+    "test_from": "2024-05-01",
+    "min_characters": 80,
+    "near_duplicate_cosine": 0.93,
+    "seed": 42,
+    "agent_sample_size": 100,
+    "development_routed_error_target": 0.1,
+    "minimum_development_routes": 20,
+    "score_grid": [
+      0,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      1.01
+    ],
+    "margin_grid": [
+      0,
+      0.1,
+      0.2
+    ],
+    "max_characters": 12000,
+    "language_screen": "at least 3 distinct English function words; heuristic only",
+    "sampling": "lowest SHA256(seed:complaint_id) within each month and category after eligibility screening",
+    "source": "CFPB official narrative archive; two bounded date archives",
+    "frozen_before_training_utc": "2026-10-27"
+  },
+  "policy": {
+    "version": "1.0",
+    "min_score": 0,
+    "min_margin": 0.1,
+    "teams": {
+      "Credit card": "Card support",
+      "Checking or savings account": "Deposit account support",
+      "Mortgage": "Mortgage support",
+      "Debt collection": "Collections complaint review"
+    },
+    "score_note": "Uncalibrated model scores; not probability of being correct.",
+    "development_routes": 433,
+    "development_routed_error": 0.08083140877598152,
+    "development_target": 0.1,
+    "team_note": "Illustrative mapping created for this project, not CFPB or company teams."
+  },
+  "cleaning": {
+    "downloaded_rows": 3600,
+    "duplicate_ids_removed": 0,
+    "missing_or_short_removed": 0,
+    "exact_normalized_duplicates_removed": 252,
+    "near_duplicates_removed": 156,
+    "retained_rows": 3192,
+    "split_counts": {
+      "development": {
+        "Checking or savings account": 144,
+        "Credit card": 119,
+        "Debt collection": 83,
+        "Mortgage": 143
+      },
+      "test": {
+        "Checking or savings account": 292,
+        "Credit card": 278,
+        "Debt collection": 177,
+        "Mortgage": 275
+      },
+      "train": {
+        "Checking or savings account": 432,
+        "Credit card": 427,
+        "Debt collection": 386,
+        "Mortgage": 436
+      }
+    }
+  },
+  "sources": [
+    {
+      "url": "https://files.consumerfinance.gov/f/documents/CCDB_Export_5_September_2023_through_March_2024.zip",
+      "bytes": 100880669,
+      "sha256": "993747363e52239e4762b804662d7f604f976a139de4f729f613329d3d8c7206",
+      "retrieved_utc": "2026-10-29T23:36:22.711548+00:00",
+      "archive_rows": 945532,
+      "scope_rows": 62388,
+      "missing_or_short": 28751,
+      "too_long": 71,
+      "english_heuristic_excluded": 1110
+    },
+    {
+      "url": "https://files.consumerfinance.gov/f/documents/CCDB_Export_6_April_2024_through_July_2024.zip",
+      "bytes": 77142558,
+      "sha256": "c8a6fb0d98287958e2c19b47e1a4211c4e43225d27123a3ca08d730a2b4ae0a5",
+      "retrieved_utc": "2026-10-29T23:36:33.419388+00:00",
+      "archive_rows": 839903,
+      "scope_rows": 73265,
+      "missing_or_short": 34428,
+      "too_long": 71,
+      "english_heuristic_excluded": 1010
+    }
+  ],
+  "protocol_sha256": "80b21ff7ae2ba2875c5b04ea2093afa9ef1b012e3188464abb461a9fc48ec194",
+  "model_sha256": "8c6f9d23bdf66f6716a99a543c32002cad463905861809029ba241e9c3acf9f4",
+  "clean_data_sha256": "25583f7ac22a12b447816e6761233ec89fc30397aa4b91a16937fcb7a5233719",
+  "agent_sample_sha256": "0676d74ff43ae8017e9a0aae6d15597cc30c8dda1126c7476f3ecccedc61a8e6",
+  "full_test": {
+    "classifier_only": {
+      "cases": 1022,
+      "route_suggestions": 1022,
+      "human_reviews": 0,
+      "route_rate": 1,
+      "review_rate": 0,
+      "routed_error_rate": 0.136986301369863,
+      "wrong_routes_per_all_cases": 0.136986301369863,
+      "classifier_errors": 140,
+      "classifier_errors_deferred": 0,
+      "fraction_classifier_errors_deferred": 0
+    },
+    "python_review_rules": {
+      "cases": 1022,
+      "route_suggestions": 877,
+      "human_reviews": 145,
+      "route_rate": 0.8581213307240705,
+      "review_rate": 0.14187866927592954,
+      "routed_error_rate": 0.07183580387685291,
+      "wrong_routes_per_all_cases": 0.06164383561643835,
+      "classifier_errors": 140,
+      "classifier_errors_deferred": 77,
+      "fraction_classifier_errors_deferred": 0.55
+    }
+  },
+  "matched_agent_sample": {
+    "classifier_only": {
+      "cases": 100,
+      "route_suggestions": 100,
+      "human_reviews": 0,
+      "route_rate": 1,
+      "review_rate": 0,
+      "routed_error_rate": 0.1,
+      "wrong_routes_per_all_cases": 0.1,
+      "classifier_errors": 10,
+      "classifier_errors_deferred": 0,
+      "fraction_classifier_errors_deferred": 0
+    },
+    "python_review_rules": {
+      "cases": 100,
+      "route_suggestions": 83,
+      "human_reviews": 17,
+      "route_rate": 0.83,
+      "review_rate": 0.17,
+      "routed_error_rate": 0.04819277108433735,
+      "wrong_routes_per_all_cases": 0.04,
+      "classifier_errors": 10,
+      "classifier_errors_deferred": 6,
+      "fraction_classifier_errors_deferred": 0.6
+    }
+  },
+  "matched_sample_class_counts": {
+    "Credit card": 33,
+    "Checking or savings account": 26,
+    "Mortgage": 24,
+    "Debt collection": 17
+  },
+  "classification_report": {
+    "Checking or savings account": {
+      "precision": 0.8407643312101911,
+      "recall": 0.9041095890410958,
+      "f1-score": 0.8712871287128713,
+      "support": 292
+    },
+    "Credit card": {
+      "precision": 0.8594377510040161,
+      "recall": 0.7697841726618705,
+      "f1-score": 0.8121442125237192,
+      "support": 278
+    },
+    "Debt collection": {
+      "precision": 0.825136612021858,
+      "recall": 0.8531073446327684,
+      "f1-score": 0.8388888888888889,
+      "support": 177
+    },
+    "Mortgage": {
+      "precision": 0.9166666666666666,
+      "recall": 0.92,
+      "f1-score": 0.9183303085299456,
+      "support": 275
+    },
+    "accuracy": 0.863013698630137,
+    "macro avg": {
+      "precision": 0.8605013402256829,
+      "recall": 0.8617502765839337,
+      "f1-score": 0.8601626346638562,
+      "support": 1022
+    },
+    "weighted avg": {
+      "precision": 0.8635610500525385,
+      "recall": 0.863013698630137,
+      "f1-score": 0.8622466740164586,
+      "support": 1022
+    }
+  },
+  "confusion_matrix": {
+    "labels": [
+      "Checking or savings account",
+      "Credit card",
+      "Debt collection",
+      "Mortgage"
+    ],
+    "rows_true_columns_predicted": [
+      [
+        264,
+        20,
+        3,
+        5
+      ],
+      [
+        32,
+        214,
+        25,
+        7
+      ],
+      [
+        7,
+        8,
+        151,
+        11
+      ],
+      [
+        11,
+        7,
+        4,
+        253
+      ]
+    ]
+  },
+  "agent": {
+    "status": "pending",
+    "attempted": 0,
+    "reason": "No API key configured; no paid calls authorized or made."
+  },
+  "versions": {
+    "numpy": "2.5.4",
+    "pandas": "3.1.0",
+    "scikit-learn": "1.9.1",
+    "joblib": "1.6.0",
+    "streamlit": "1.66.1"
+  }
+}

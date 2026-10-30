@@ -1,4 +1,4 @@
-"""Coverage and error together, including deferred and failed cases."""
+"""Coverage and error together, including every deferred case."""
 import numpy as np
 
 def metrics(truth, prediction, routed):
@@ -16,8 +16,8 @@ def metrics(truth, prediction, routed):
 
 def compare(frame, model, policy):
     from cra.model import classify_complaint, rule_decision
-    tool=[classify_complaint(t,model) for t in frame.text]
-    prediction=[r['suggested_category'] for r in tool]
-    decisions=[rule_decision(r,policy) for r in tool]
+    classifications=[classify_complaint(t,model) for t in frame.text]
+    prediction=[r['suggested_category'] for r in classifications]
+    decisions=[rule_decision(r,policy) for r in classifications]
     return {'classifier_only':metrics(frame.category,prediction,[True]*len(frame)),
-            'python_review_rules':metrics(frame.category,prediction,[d['action']=='ROUTE_SUGGESTION' for d in decisions])}, tool, decisions
+            'python_review_rules':metrics(frame.category,prediction,[d['action']=='ROUTE_SUGGESTION' for d in decisions])}, classifications, decisions

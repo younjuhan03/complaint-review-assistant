@@ -32,15 +32,13 @@ The selected policy has **min_score=0 and min_margin=0.1**: the absolute-score r
 
 Teams are fictional mappings: Card support; Deposit account support; Mortgage support; Collections complaint review. The model does not detect all out-of-domain inputs or infer urgency, liability or customer harm.
 
-## LLM comparison
+## Local demonstration and final scope
 
-A seeded uniform sample of 100 retained test rows is fixed and hashed before LLM execution. The all-route classifier, Python rules and real agent must use those same cases. Full-test numbers are supplementary; do not compare full-test classifier numbers to a 100-case agent result.
+The app applies the classifier and fixed Python review policy directly. It displays a provisional category, an illustrative team, a review decision and the rule that determined it. It has no LLM client, provider credential requirement, free-form chatbot, or external action. Prepared examples are original illustrations, not copied narratives or evidence of evaluation performance. A prepared example is never forced to a particular outcome.
 
-The LLM chooses which of two tools to call first, reads both outputs, and generates structured JSON. The Python tool adapter binds classification to the original complaint, with no replacement-text parameter exposed to the LLM. Two required tool calls and one final request are the maximum. A validator enforces category/team consistency and mandatory review, while allowing extra deferral. These guards are ordinary code; the LLM's added role is constrained tool orchestration and explanation, not a new classifier.
+All example predictions run locally. Entered text is not saved by the app. Loading a model or inference failure shows a human-review message rather than issuing a team suggestion. Input screening cannot detect every irrelevant or out-of-domain complaint.
 
-Untrusted complaint instructions cannot add tools or alter policy. Missing tools, unauthorized arguments, invalid JSON, rule overrides, truncation and API/tool failures become HUMAN_REVIEW, with a failure record. Such cases remain in the denominator. Tests use fake transports solely to test these software controls, not to measure real agent performance. The validator cannot prove that every free-text explanation is semantically sound; trace review is still needed. No live prompt-injection robustness claim is made.
-
-Cache keys include input, model ID, model-artifact fingerprint, policy, prompt and tool schemas. Responses including failures are cached. Changing any of these creates a new experiment; do not silently replace inconvenient failures. Account access and provider integration remain unverified until an authorized real smoke test.
+The final comparison uses all 1,022 retained test cases for both methods. The earlier optional LLM extension was removed without changing the model or review thresholds. The original frozen protocol and archived run JSON retain an unused `agent_sample_size` field and related historical metadata so their recorded hashes remain verifiable; current training and the final app do not use that extension or its 100-case sample.
 
 ## Metric definitions
 
@@ -52,8 +50,8 @@ Cache keys include input, model ID, model-artifact fingerprint, policy, prompt a
 | Wrong routes per all cases | Wrong suggestions / all cases |
 | Errors deferred | Base classifier errors sent to review / all base classifier errors; undefined if none |
 
-No human correction is simulated. Agent failures, violations, recorded usage and original latency will be reported after real execution. Cached original usage is historical, not a new charge. Failed calls can have unknown usage; pricing calculations are estimates, not invoices. No operating-cost, time-saving, satisfaction or Human+AI superiority claims are supported.
+No human correction is simulated. Report coverage and routed error together, including cases left for review. No operating-cost, time-saving, satisfaction or Human+AI superiority claims are supported.
 
 ## Reproduction record
 
-The current aggregate file records Juhan's October 29 local run. Its protocol, cleaned-data and agent-sample file hashes match the initial development run, and the selected threshold pair remains (0, 0.1). Packages differ, including scikit-learn 1.8.0 → 1.9.1. The small change in predictions is consistent with environment differences, but no controlled test isolates the cause. Preserve the [initial aggregates](evidence/initial_run_2026-10-27.json) alongside [current aggregates](evidence/summary.json); this is not a new independent validation set.
+The current aggregate file records Juhan's October 29 local run. Its protocol, cleaned-data and agent-sample file hashes match the initial development run, and the selected threshold pair remains (0, 0.1). Packages differ, including scikit-learn 1.8.0 → 1.9.1. The small change in predictions is consistent with environment differences, but no controlled test isolates the cause. Preserve the [initial aggregates](evidence/initial_run_2026-10-27.json) and [Windows run](evidence/windows_run_2026-10-29.json) alongside [current presentation aggregates](evidence/summary.json); this is not a new independent validation set.

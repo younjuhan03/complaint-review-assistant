@@ -1,48 +1,46 @@
-# When should an AI assistant ask for human review?
+# When should a complaint classifier ask for human review?
 
-**Offline findings · 2026-10-29 · real LLM evaluation pending**
+**Completed local study · October 29, 2026**
 
-I explored a narrow business question: when classifying an incoming complaint, when should a system suggest a team and when should a person check the case? The aim was to connect a prediction to a decision, using tools I could learn to explain before graduate study.
+## The question
 
-## What was tested
+A complaint classifier can suggest a support team, but some complaints are ambiguous. I explored whether a simple review rule could reduce wrong suggestions while making the amount of work left for people visible.
 
-The source is CFPB's official historical complaint narrative archive. Four product domains were chosen before evaluation. After fixed eligibility, sampling and duplicate checks, 3,192 narratives remained. A TF-IDF + logistic regression model learned from 1,681 January–March 2024 complaints. April's 489 cases selected a review rule. The rule was then frozen for 1,022 May–June cases. Only complaint text was used as input.
+## What I tried
 
-The classifier-only method always suggested one category. The Python comparator deferred cases whose two leading model scores were less than 0.1 apart. Invalid inputs also require review. Model scores have not been calibrated. Reference labels are public product selections, not guaranteed business-routing truth.
+Using CFPB's official historical complaint archive, I selected four product categories before fitting: Credit card; Checking or savings account; Mortgage; Debt collection. Fixed screening, sampling and duplicate checks left 3,192 narratives. A TF-IDF + logistic regression model learned from 1,681 January–March 2024 cases. April's 489 cases selected review thresholds; May–June's 1,022 cases evaluated the fixed policy. Only narrative text entered the model.
 
-## What the numbers say
+The baseline classified every case. The review policy deferred invalid inputs and cases where the two leading model scores were less than 0.1 apart. The chosen absolute-score threshold was zero, so that restriction was inactive. Scores were not calibrated as probabilities of correct classification. A company's acceptable error tolerance was not established.
 
-| Later test set: 1,022 cases | Classifier only | Classifier + Python rules |
+## What I found
+
+| Later test set: 1,022 cases | Classify every case | Use review rules |
 |---|---:|---:|
-| Suggested cases | 1,022 (100%) | 877 (85.8%) |
+| Team suggestions | 1,022 (100%) | 877 (85.8%) |
 | Human review | 0 | 145 (14.2%) |
 | Wrong suggestions | 140 | 63 |
 | Wrong / suggested | 13.7% | 7.2% |
 | Wrong / all cases | 13.7% | 6.2% |
-| Base errors deferred | 0/140 | 77/140 (55.0%) |
+| Original classifier errors deferred | 0/140 | 77/140 (55%) |
 
-The rule reduced wrong automatic suggestions while giving up some automatic coverage. It did not remove all errors. It also deferred 68 cases that agreed with the public label. Those cases illustrate the additional review workload; actual reviewer time was not measured.
+The rule deferred 77 errors but also 68 predictions that agreed with the public product label. It therefore reduced wrong automatic suggestions at the expense of additional review. It still issued 63 wrong suggestions. Deferred cases were not assumed to be corrected by a person.
 
-For the **fixed 100-case sample reserved for the LLM comparison**, the classifier made 10 wrong suggestions out of 100. The Python rules suggested 83, including 4 wrong suggestions; 17 were deferred, including 6 of the original 10 errors. These sample results differ from the full test set and must be the baselines used for the real agent comparison.
+## What this establishes
 
-## What the agent has and has not demonstrated
+For this sample and fixed policy, review rules created a measurable trade-off between automatic coverage and disagreement with reference labels. This is a local text-classification and decision-rule experiment. It is complete without an external language model.
 
-The implementation allows an LLM to call a classifier tool and a review-policy tool and return a validated structured result. The LLM cannot replace the category, invent a team or loosen mandatory review. A deterministic rule can already make the basic boundary decision.
+Public product selections are imperfect routing reference labels. Product domains can overlap in one complaint, and the capped sample does not reproduce a real company's complaint mix. Language screening, template removal and out-of-scope input detection are imperfect. Team names are project-defined examples. Neither category nor score establishes urgency, harm or liability.
 
-**No real LLM calls have been made.** Agent error rates, extra deferrals, rule violations, output failures, API failures, usage and latency are pending. Software tests verify mocked tool-flow and failure controls, not agent quality. There is no evidence yet that the LLM adds business value. Its explanation quality would also need human inspection.
+No actual reviewer corrections, employee time, customer satisfaction or operating cost savings were measured. The experiment cannot show that human+AI outperforms AI alone or that the policy should be deployed.
 
-## Interpretation and limits
+## Reflection draft for Juhan
 
-This is a small, capped, roughly balanced public-data sample. It is not a representative customer queue. The source is historical and public narratives may be selective; language screening and near-copy removal are imperfect. Product domains can overlap in a single complaint. Neither labels nor scores establish urgency, harm or liability. Team names are illustrative project choices.
+I learned to show coverage and error together. A system can appear more reliable simply by refusing more cases, so the work left for people must be counted. I want to learn how the costs of wrong routing and reviewer capacity should shape the review boundary. This experiment is a starting point for that question, not a production recommendation.
 
-The development target of <=10% suggested-case error was an exploratory choice. It is not a company's acceptable-risk policy or a guarantee for future data. We did not measure actual human corrections, task time, satisfaction or cost savings.
+This is an AI-assisted reflection draft for Juhan to assess and revise in his own words.
 
-## Reflection draft for Juhan to review
+## Reproduction and final scope
 
-A useful result was learning to show coverage and error together. A system can appear safer simply by refusing more cases, so I need to show what remains for people. I would like to learn how business costs and reviewer capacity should shape that boundary, and whether a tool-using assistant earns its additional cost through useful, reliable explanations.
+Headline results use Juhan's October 29 Windows run. Its protocol, cleaned-data and fixed audit-sample hashes match the initial development run; the thresholds are unchanged. Package versions differ, including scikit-learn 1.8.0 → 1.9.1, and a few predictions differ. Environment differences are a plausible explanation, not an experimentally isolated cause. Both original run files are archived, and the newer figures were not chosen for better performance. This is the same test data, not new independent validation.
 
-This paragraph is a draft, not a statement that Juhan has already independently interpreted every result. Implementation and initial writing were AI-assisted. The next learning step is to explain one routed case, one deferred case and one error using the code and recorded evidence.
-
-## Local reproduction — October 29, 2026
-
-The headline results now use Juhan's Windows reproduction. The protocol, cleaned-data and fixed 100-case sample SHA256 values exactly match the [initial run](evidence/initial_run_2026-10-27.json). The review thresholds are unchanged. Library versions differ (including scikit-learn 1.8.0 → 1.9.1), and a few predictions differ. Environment/version differences are a plausible explanation, not an experimentally isolated cause. This reproduction does not introduce new independent test data. Both runs are retained; the updated figures were not chosen for better performance. Real LLM evaluation remains pending.
+An optional LLM extension was removed from the final scope after setup exploration. An unsuccessful optional connection attempt is not included as evidence of model performance or of agent effectiveness. The completed comparison above uses only the classifier and Python rules. Scope simplification did not retune the model, alter the review thresholds, or select different test cases.

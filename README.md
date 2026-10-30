@@ -1,85 +1,82 @@
 # Complaint Review Assistant
-### When should an AI assistant ask for human review?
+### When should a complaint classifier ask for human review?
 
-A small pre-graduate-study exploration by Juhan Youn: use complaint text to suggest a product support team, while leaving uncertain cases for a person.
+A small text analytics study by Juhan Youn: compare suggesting a support team for every complaint with leaving uncertain cases for a person.
 
-**Current status:** real public data, classifier, Python review rules and local app evaluated. The real LLM tool-calling implementation is ready for a paid smoke test; **agent evaluation pending**. No LLM performance is claimed.
+**Completed scope:** one local text classifier, fixed Python review rules, an offline comparison and a Streamlit demo. **No LLM, API key or paid inference service is required.**
 
-## What the comparison found
+## What I found
 
 On **1,022 complaints received in May–June 2024**:
 
 | Method | Team suggestions | Human review | Error among suggestions | Wrong suggestions / all cases |
 |---|---:|---:|---:|---:|
-| Classifier only | 100% | 0% | 13.7% (140/1,022) | 13.7% |
-| Classifier + Python review rules | 85.8% | 14.2% | 7.2% (63/877) | 6.2% |
-| Real LLM assistant | Pending | Pending | Pending | Pending |
+| Classify every case | 100% | 0% | 13.7% (140/1,022) | 13.7% |
+| Use review rules | 85.8% | 14.2% | 7.2% (63/877) | 6.2% |
 
-The rules deferred **77 of the classifier's 140 errors (55.0%)**. Deferring a case does not mean that a person corrected it. These are disagreements with public product labels, which are imperfect proxies for appropriate business routing.
+The rule deferred **77 of the classifier's 140 errors (55%)**. It also deferred **68 cases whose predictions matched the public label**. There is a review-workload trade-off, and a deferred case is not a corrected case.
 
-**My question for further study:** How should the boundary change when the cost of a wrong suggestion and the capacity of human reviewers are known?
+**Takeaway:** fewer wrong suggestions are possible by asking people to check some cases. The study does not tell us the best boundary for a company; that requires real error costs and reviewer capacity.
 
-## What it does
+“Error” means disagreement with a public product label, not an independently verified business-routing mistake. Team names are illustrative. No actual customer outcome, time saving or cost saving was measured.
 
-- TF-IDF + logistic regression learns four product categories from complaint text only.
-- Fixed review rules handle invalid inputs or closely competing model scores.
-- A bounded LLM assistant calls `classify_complaint` and `get_review_policy`, then returns a structured routing suggestion or `HUMAN_REVIEW`.
-- The same-rule Python baseline makes clear that this boundary decision does not require an LLM.
+## What I built
+
+- One TF-IDF + logistic regression model for four product categories.
+- Review thresholds selected using development data, then fixed for later evaluation.
+- A local app that displays a category, illustrative team, review decision and rule-based reason.
 
 ```mermaid
 flowchart TD
-    A["English complaint"] --> B["Assistant calls two tools"]
-    B --> C["Text classifier"]
-    B --> D["Fixed review policy"]
-    C --> E["Validated team suggestion or human review"]
-    D --> E
+    A["Complaint text"] --> B["Local text classifier"]
+    B --> C["Fixed review checks"]
+    C --> D["Suggest an illustrative team"]
+    C --> E["Ask a person to review"]
 ```
 
-The assistant chooses tool order and explains results. It cannot rewrite the input, change the policy, invent a team or take external action. It is a deliberately narrow agent, not a general chatbot.
+The app is not a chatbot and never sends a complaint to a company. Entered text is not sent to an external AI service or saved by the app. First-time data preparation downloads public archives; prediction itself runs locally.
 
-## Run locally — Windows PowerShell
+## Open the app — Windows / VS Code
 
-Extract the project and open its folder in VS Code. Use Python 3.11 or newer. Enter these commands separately:
+Download **Code → Download ZIP**, extract it, and open the folder containing `pyproject.toml` in VS Code. Open **Terminal → New Terminal**. Python 3.11+ is required. Run each command separately:
 
 ```powershell
 python -m venv .venv
 ```
 ```powershell
-.\.venv\Scripts\Activate.ps1
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
 ```
 ```powershell
-python -m pip install -e ".[dev]"
+.\.venv\Scripts\python.exe -m cra.cli prepare
 ```
 ```powershell
-python -m cra.cli prepare
+.\.venv\Scripts\python.exe -m cra.cli train
 ```
 ```powershell
-python -m cra.cli train
+.\.venv\Scripts\python.exe -m pytest -q
 ```
 ```powershell
-python -m pytest -q
-```
-```powershell
-python -m streamlit run app/streamlit_app.py
+.\.venv\Scripts\python.exe -m streamlit run app/streamlit_app.py
 ```
 
-Open the Local URL printed by Streamlit. The terminal stays occupied while the app runs; press Ctrl+C to stop. If activation is blocked, select `.venv` through VS Code's **Python: Select Interpreter**, open a new terminal, and confirm `python -c "import sys; print(sys.executable)"` points to `.venv`. Do not change machine-wide security settings.
+Open the **Local URL** printed in the terminal. Keep the terminal running; **Ctrl+C** stops the app. Calling the environment's Python directly avoids PowerShell activation restrictions.
 
-Preparation downloads **two official date archives, about 178 MB total**, because the current CFPB API no longer supplies narratives. It keeps only a small sample locally. First-time cleaning can take several minutes. See [methodology](docs/methodology.md) for source links and exact criteria. No API key is needed for these steps.
+First-time preparation reads two official CFPB date archives, about **178 MB total**, and keeps a small sample. Cleaning can take several minutes. Later launches need only the final command.
 
-## Explore the evidence
+### Updating an existing project folder
+
+Stop the app. Extract the current source ZIP and copy its contents into your existing project folder, replacing source files. Keep your existing `.venv/`, `data/` and `results/` folders so you can reuse your model. Restart with the final command above. Old optional agent files are unused by this version; the repository's current source contains no agent or API execution path. Do not rerun data preparation or training just to update the interface.
+
+## Read the study
 
 - [Short findings report](docs/results.md)
-- [Data, frozen protocol and evaluation definitions](docs/methodology.md)
-- [Optional real API evaluation and cost preview](docs/api_run.md)
-- [Code tour and learning checklist (Korean)](docs/learning_ko.md)
-- [GitHub setup](docs/github_setup.md)
-- [Machine-readable aggregates](docs/evidence/summary.json)
+- [Data and methods](docs/methodology.md)
+- [Code tour and explanation in Korean](docs/learning_ko.md)
+- [Verification](docs/verification.md)
+- [Aggregate evidence](docs/evidence/summary.json)
 
-No real replies, financial advice, urgency assessment or complaint submissions. Team names are project-defined examples. No measured time saving, customer satisfaction improvement or operational cost saving is claimed.
+Headline figures use Juhan's October 29 Windows run. It used the same cleaned data and thresholds as the initial run, with a few different predictions across library versions. Both original runs are retained in [the evidence archive](docs/evidence/README.md); no more favorable run was selected and no new independent validation is claimed. Retraining in another environment can produce slightly different figures.
 
 ## Authorship and learning
 
-Implementation, tests and initial documentation were developed with AI assistance. Juhan selected the question and scope with that support. Personal interpretations and learning statements remain drafts for Juhan to review and explain in his own words; this repository does not imply independently authored code or an employed data-scientist role.
-
-Results shown above use Juhan's October 29 Windows reproduction. Identical data and review thresholds produced slightly different predictions with different library versions. The [initial run](docs/evidence/initial_run_2026-10-27.json) is retained; see the [reproduction note](docs/results.md#local-reproduction--october-29-2026).
+Code, tests and initial writing were developed with AI assistance. Juhan chose the question and scope with that support. Reflections remain drafts for Juhan to review and explain in his own words; the repository does not imply independently authored code or professional deployment experience.
