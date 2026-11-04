@@ -65,7 +65,7 @@ First-time preparation reads two official CFPB date archives, about **178 MB tot
 
 ### Updating an existing project folder
 
-Stop the app. Extract the current source ZIP and copy its contents into your existing project folder, replacing source files. Keep your existing `.venv/`, `data/` and `results/` folders so you can reuse your model. Restart with the final command above. Old optional agent files are unused by this version; the repository's current source contains no agent or API execution path. Do not rerun data preparation or training just to update the interface.
+Stop the app. Extract the current source ZIP and copy its contents into your existing project folder, replacing source files. Keep your existing `.venv/`, `data/` and `results/` folders so you can reuse your model. Restart with the final command above. Do not rerun data preparation or training just to update the interface.
 
 ## Read the study
 
@@ -75,8 +75,8 @@ Stop the app. Extract the current source ZIP and copy its contents into your exi
 - [Verification](docs/verification.md)
 - [Aggregate evidence](docs/evidence/summary.json)
 
-Headline figures use Juhan's October 29 Windows run. It used the same cleaned data and thresholds as the initial run, with a few different predictions across library versions. Both original runs are retained in [the evidence archive](docs/evidence/README.md); no more favorable run was selected and no new independent validation is claimed. Retraining in another environment can produce slightly different figures.
+Headline figures use my October 29 Windows run. It used the same cleaned data and thresholds as the initial run, with a few different predictions across library versions. Both original runs are retained in [the evidence archive](docs/evidence/README.md); no more favorable run was selected and no new independent validation is claimed. Retraining in another environment can produce slightly different figures.
 
 ## Authorship and learning
 
-Code, tests and initial writing were developed with AI assistance. Juhan chose the question and scope with that support. Reflections remain drafts for Juhan to review and explain in his own words; the repository does not imply independently authored code or professional deployment experience.
+Code, tests and initial documentation were developed with AI assistance. I worked on the project's question, scope and interpretation with that support. This is an exploratory study, not a deployed business system.
