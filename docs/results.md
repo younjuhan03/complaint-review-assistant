@@ -33,14 +33,12 @@ Public product selections are imperfect routing reference labels. Product domain
 
 No actual reviewer corrections, employee time, customer satisfaction or operating cost savings were measured. The experiment cannot show that human+AI outperforms AI alone or that the policy should be deployed.
 
-## Reflection draft for Juhan
+## Interpreting coverage and error
 
-I learned to show coverage and error together. A system can appear more reliable simply by refusing more cases, so the work left for people must be counted. I want to learn how the costs of wrong routing and reviewer capacity should shape the review boundary. This experiment is a starting point for that question, not a production recommendation.
-
-This is an AI-assisted reflection draft for Juhan to assess and revise in his own words.
+Coverage and error must be considered together: a system can issue fewer wrong suggestions by deferring more cases, so the work left for people must also be counted. A business review boundary would depend on wrong-routing costs and reviewer capacity. This experiment is a starting point for that evaluation, not a production recommendation.
 
 ## Reproduction and final scope
 
-Headline results use Juhan's October 29 Windows run. Its protocol, cleaned-data and fixed audit-sample hashes match the initial development run; the thresholds are unchanged. Package versions differ, including scikit-learn 1.8.0 → 1.9.1, and a few predictions differ. Environment differences are a plausible explanation, not an experimentally isolated cause. Both original run files are archived, and the newer figures were not chosen for better performance. This is the same test data, not new independent validation.
+Headline results use my October 29 Windows run. Its protocol, cleaned-data and fixed audit-sample hashes match the initial development run; the thresholds are unchanged. Package versions differ, including scikit-learn 1.8.0 → 1.9.1, and a few predictions differ. Environment differences are a plausible explanation, not an experimentally isolated cause. Both original run files are archived, and the newer figures were not chosen for better performance. This is the same test data, not new independent validation.
 
 An optional LLM extension was removed from the final scope after setup exploration. An unsuccessful optional connection attempt is not included as evidence of model performance or of agent effectiveness. The completed comparison above uses only the classifier and Python rules. Scope simplification did not retune the model, alter the review thresholds, or select different test cases.
