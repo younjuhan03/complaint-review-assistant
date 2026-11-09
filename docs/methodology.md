@@ -10,7 +10,7 @@ The [website legal notice](https://www.consumerfinance.gov/privacy/website-priva
 
 ## Scope fixed before training
 
-The user selected four categories before model evaluation: **Credit card; Checking or savings account; Mortgage; Debt collection**. These are product domains, not specific issue types, urgency or harm levels. The scope is January–June 2024. A small source inspection confirmed fields, label availability and plausible narrative text before fitting.
+I selected four categories before model evaluation: **Credit card; Checking or savings account; Mortgage; Debt collection**. These are product domains, not specific issue types, urgency or harm levels. The scope is January–June 2024. A small source inspection confirmed fields, label availability and plausible narrative text before fitting.
 
 Eligibility is 80–12,000 stripped characters and at least three distinct words from `the, and, my, was, have, with, that, this, from, not, for`. This is an English screening heuristic, not a validated language detector. It can reject valid English or retain other-language text. Missing/short, long and heuristic-excluded counts are recorded separately during archive scanning.
 
@@ -54,4 +54,4 @@ No human correction is simulated. Report coverage and routed error together, inc
 
 ## Reproduction record
 
-The current aggregate file records Juhan's October 29 local run. Its protocol, cleaned-data and agent-sample file hashes match the initial development run, and the selected threshold pair remains (0, 0.1). Packages differ, including scikit-learn 1.8.0 → 1.9.1. The small change in predictions is consistent with environment differences, but no controlled test isolates the cause. Preserve the [initial aggregates](evidence/initial_run_2026-10-27.json) and [Windows run](evidence/windows_run_2026-10-29.json) alongside [current presentation aggregates](evidence/summary.json); this is not a new independent validation set.
+The current aggregate file records my October 29 local run. Its protocol, cleaned-data and agent-sample file hashes match the initial development run, and the selected threshold pair remains (0, 0.1). Packages differ, including scikit-learn 1.8.0 → 1.9.1. The small change in predictions is consistent with environment differences, but no controlled test isolates the cause. Preserve the [initial aggregates](evidence/initial_run_2026-10-27.json) and [Windows run](evidence/windows_run_2026-10-29.json) alongside [current presentation aggregates](evidence/summary.json); this is not a new independent validation set.

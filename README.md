@@ -1,82 +1,49 @@
 # Complaint Review Assistant
 ### When should a complaint classifier ask for human review?
 
-A small text analytics study by Juhan Youn: compare suggesting a support team for every complaint with leaving uncertain cases for a person.
+**My finding:** a fixed review rule deferred 77 of 140 classification errors, while also sending 68 correctly classified cases for review. I evaluate that reduction alongside the additional workload it creates.
 
-**Completed scope:** one local text classifier, fixed Python review rules, an offline comparison and a Streamlit demo. **No LLM, API key or paid inference service is required.**
+I compared classifying every complaint with reserving uncertain cases for a person. My study uses public CFPB complaints, a local TF-IDF + logistic regression model, and fixed Python review rules.
+
+**Explore:** [findings](docs/results.md) · [methods](docs/methodology.md) · [my analytical reasoning](docs/learning_ko.md) · [local app instructions](docs/github_setup.md)
 
 ## What I found
 
 On **1,022 complaints received in May–June 2024**:
 
-| Method | Team suggestions | Human review | Error among suggestions | Wrong suggestions / all cases |
+| Policy | Team suggestions | Human review | Wrong / suggested | Wrong / all cases |
 |---|---:|---:|---:|---:|
-| Classify every case | 100% | 0% | 13.7% (140/1,022) | 13.7% |
-| Use review rules | 85.8% | 14.2% | 7.2% (63/877) | 6.2% |
+| Classify every case | 1,022 (100%) | 0 | 13.7% (140/1,022) | 13.7% |
+| Apply review rules | 877 (85.8%) | 145 (14.2%) | 7.2% (63/877) | 6.2% |
 
-The rule deferred **77 of the classifier's 140 errors (55%)**. It also deferred **68 cases whose predictions matched the public label**. There is a review-workload trade-off, and a deferred case is not a corrected case.
+I count disagreement with the public product label as an error. Deferring a case does not mean a person corrected it; I did not measure reviewer outcomes.
 
-**Takeaway:** fewer wrong suggestions are possible by asking people to check some cases. The study does not tell us the best boundary for a company; that requires real error costs and reviewer capacity.
+## My analytical decisions
 
-“Error” means disagreement with a public product label, not an independently verified business-routing mistake. Team names are illustrative. No actual customer outcome, time saving or cost saving was measured.
+- **Compare a policy with its baseline.** I use the same later complaints for both policies, so I can identify which errors are deferred and which correct predictions create extra work.
+- **Select thresholds before later evaluation.** January–March data fit the model, April data select review thresholds, and May–June data evaluate the fixed policy.
+- **Keep denominators visible.** The 7.2% error rate concerns the 877 suggestions; 6.2% uses all 1,022 cases. Neither figure alone describes the workload tradeoff.
+- **Treat scores carefully.** A small gap between the two leading categories triggers review. I do not interpret the uncalibrated model scores as verified probabilities of correctness.
 
-## What I built
+## What I want to study next
 
-- One TF-IDF + logistic regression model for four product categories.
-- Review thresholds selected using development data, then fixed for later evaluation.
-- A local app that displays a category, illustrative team, review decision and rule-based reason.
+I want to choose a review boundary using explicit error costs and reviewer capacity. That connects classification to resource allocation and business decision-making: which cases should receive limited human attention, and how should I evaluate the policy's overall value?
 
-```mermaid
-flowchart TD
-    A["Complaint text"] --> B["Local text classifier"]
-    B --> C["Fixed review checks"]
-    C --> D["Suggest an illustrative team"]
-    C --> E["Ask a person to review"]
-```
+## Explore the implementation
 
-The app is not a chatbot and never sends a complaint to a company. Entered text is not sent to an external AI service or saved by the app. First-time data preparation downloads public archives; prediction itself runs locally.
+- `cra/data.py`: sampling, screening, duplicate checks and chronological splits.
+- `cra/model.py`: text classification, threshold selection and review checks.
+- `cra/evaluate.py`: coverage, errors and deferral accounting.
+- `app/streamlit_app.py`: saved findings and local examples.
 
-## Open the app — Windows / VS Code
+The app runs locally and requires no API key. First-time data preparation downloads about 178 MB of official archives. [Setup and launch instructions](docs/github_setup.md) explain the process.
 
-Download **Code → Download ZIP**, extract it, and open the folder containing `pyproject.toml` in VS Code. Open **Terminal → New Terminal**. Python 3.11+ is required. Run each command separately:
+## Evidence and limits
 
-```powershell
-python -m venv .venv
-```
-```powershell
-.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
-```
-```powershell
-.\.venv\Scripts\python.exe -m cra.cli prepare
-```
-```powershell
-.\.venv\Scripts\python.exe -m cra.cli train
-```
-```powershell
-.\.venv\Scripts\python.exe -m pytest -q
-```
-```powershell
-.\.venv\Scripts\python.exe -m streamlit run app/streamlit_app.py
-```
+My headline figures come from my October 29 Windows run. The [evidence archive](docs/evidence/README.md) preserves both original runs and documents environment differences. The [verification record](docs/verification.md) separates software checks from model-performance evidence.
 
-Open the **Local URL** printed in the terminal. Keep the terminal running; **Ctrl+C** stops the app. Calling the environment's Python directly avoids PowerShell activation restrictions.
+The sample covers four product categories. Public product labels are imperfect routing references, and team names are illustrative. I have not measured actual reviewer corrections, time savings or customer outcomes. A practical policy would require a company's own case mix, error costs and capacity.
 
-First-time preparation reads two official CFPB date archives, about **178 MB total**, and keeps a small sample. Cleaning can take several minutes. Later launches need only the final command.
+## Development note
 
-### Updating an existing project folder
-
-Stop the app. Extract the current source ZIP and copy its contents into your existing project folder, replacing source files. Keep your existing `.venv/`, `data/` and `results/` folders so you can reuse your model. Restart with the final command above. Do not rerun data preparation or training just to update the interface.
-
-## Read the study
-
-- [Short findings report](docs/results.md)
-- [Data and methods](docs/methodology.md)
-- [Code tour and explanation in Korean](docs/learning_ko.md)
-- [Verification](docs/verification.md)
-- [Aggregate evidence](docs/evidence/summary.json)
-
-Headline figures use my October 29 Windows run. It used the same cleaned data and thresholds as the initial run, with a few different predictions across library versions. Both original runs are retained in [the evidence archive](docs/evidence/README.md); no more favorable run was selected and no new independent validation is claimed. Retraining in another environment can produce slightly different figures.
-
-## Authorship and learning
-
-Code, tests and initial documentation were developed with AI assistance. I worked on the project's question, scope and interpretation with that support. This is an exploratory study, not a deployed business system.
+I used AI tools to support project development, including code and documentation.

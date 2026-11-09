@@ -84,5 +84,5 @@ if st.button('Check this complaint',type='primary',disabled=not assets_ready):
 
 st.header('What I learned')
 st.write('A classifier does not need to handle every case. Review rules can reduce wrong suggestions, but people must check more cases—including some the model already classified correctly.')
-st.write('I want to learn how to choose that boundary using the costs of wrong routing and the capacity of human reviewers. This study measures the trade-off; it does not establish the best policy for a real company.')
-st.caption('Reflection draft for Juhan to review in his own words. Implementation and initial writing were AI-assisted. Public complaint data: CFPB; no affiliation or endorsement.')
+st.write('I want to study how error costs and reviewer capacity should determine that boundary. My next step would compare review policies under an explicit capacity constraint and measure the quality of the resulting decisions.')
+st.caption('Public complaint data: CFPB. My methods, results and development notes are documented in the repository.')
