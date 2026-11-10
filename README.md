@@ -39,6 +39,10 @@ I count disagreement with the public product label as an error. Deferring a case
 
 I want to choose a review boundary using explicit error costs and reviewer capacity. That connects classification to resource allocation and business decision-making: which cases should receive limited human attention, and how should I evaluate the policy's overall value?
 
+## My next validation step
+
+For my next evaluation, I would fix a review-capacity limit and error-cost assumptions in advance, then measure actual reviewer corrections and time alongside automatic errors on a later sample.
+
 ## Explore the implementation
 
 - `cra/data.py`: sampling, screening, duplicate checks and chronological splits.
@@ -54,6 +58,6 @@ My headline figures come from my October 29 Windows run. The [evidence archive](
 
 The sample covers four product categories. Public product labels are imperfect routing references, and team names are illustrative. I have not measured actual reviewer corrections, time savings or customer outcomes. A practical policy would require a company's own case mix, error costs and capacity.
 
-## Development note
+## AI-assisted development
 
-I used AI tools to support project development, including code and documentation.
+I used AI tools to support project development, including code and documentation. I take responsibility for the analytical choices and interpretations presented here, and I document the data, comparisons, assumptions and limitations behind my conclusions. I distinguish AI assistance during development from the models I actually implement; I describe those models in the methods rather than imply that I built an LLM-based system.
