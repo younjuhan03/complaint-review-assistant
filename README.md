@@ -7,6 +7,16 @@ I compared classifying every complaint with reserving uncertain cases for a pers
 
 **Explore:** [findings](docs/results.md) · [methods](docs/methodology.md) · [my analytical reasoning](docs/learning_ko.md) · [local app instructions](docs/github_setup.md)
 
+## My project in plain English
+
+I asked **which complaints I should leave for a person instead of accepting a model's category suggestion**. I used public consumer-finance complaints to compare automatic classification with a policy that sends uncertain cases for human review.
+
+- **What I built:** I combined a local text classifier, explicit review rules and a Streamlit app that runs without an API key.
+- **How I evaluated it:** I trained on earlier complaints, selected my rules on the next month and evaluated them on later complaints.
+- **What I learned:** I deferred 77 errors, but I also sent 68 correct classifications for review. I need to weigh fewer automatic errors against the extra work I create.
+
+I use **deferral** to mean leaving a case for human review. I do not assume that a reviewer subsequently corrected it.
+
 ## What I found
 
 On **1,022 complaints received in May–June 2024**:
