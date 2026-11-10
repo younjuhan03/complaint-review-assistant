@@ -35,9 +35,9 @@ I count disagreement with the public product label as an error. Deferring a case
 - **Keep denominators visible.** The 7.2% error rate concerns the 877 suggestions; 6.2% uses all 1,022 cases. Neither figure alone describes the workload tradeoff.
 - **Treat scores carefully.** A small gap between the two leading categories triggers review. I do not interpret the uncalibrated model scores as verified probabilities of correctness.
 
-## What I want to study next
+## What I learned and want to deepen
 
-I want to choose a review boundary using explicit error costs and reviewer capacity. That connects classification to resource allocation and business decision-making: which cases should receive limited human attention, and how should I evaluate the policy's overall value?
+I learned that deciding when a model should defer can matter as much as its classification accuracy. My analysis counted the errors and workload shifted to review, but I had not measured the cost of different mistakes or what reviewers actually corrected. I want to learn more about probability calibration, cost-sensitive decisions and human–AI workflows, so I can choose and evaluate a review policy around the capacity and outcomes of a real team.
 
 ## My next validation step
 
