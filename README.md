@@ -37,7 +37,7 @@ I count disagreement with the public product label as an error. Deferring a case
 
 ## What I learned and want to deepen
 
-I learned that deciding when a model should defer can matter as much as its classification accuracy. My analysis counted the errors and workload shifted to review, but I had not measured the cost of different mistakes or what reviewers actually corrected. I want to learn more about probability calibration, cost-sensitive decisions and human–AI workflows, so I can choose and evaluate a review policy around the capacity and outcomes of a real team.
+I could count which errors my rule deferred, but I could not tell whether the added review work was worthwhile without observing reviewers. That gap draws me toward human–AI workflow design: how should calibrated model scores, the consequences of mistakes and available staff time determine when a person takes over? I want to evaluate the complete review process, including what happens after deferral.
 
 ## My next validation step
 
